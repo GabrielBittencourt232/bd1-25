@@ -1,0 +1,14 @@
+AULA 03:
+'Cardinalidade'
+1 : 1
+1 : N
+N : N
+
+TAREFA:
+Com base no exemplo executado em laboratório para o Banco de Ddos UNOESC BANK, com relacionamentos de cardinalidade 1:N
+monte um script de BD para o seguinte problema:
+
+Uma empresa veterinária deseja criar um simples banco de dados para armazenar os registros dos TIPOS_ANIMAIS que atende, podendo ser CANINOS, FELINOS, SUÍNOS, CAPRINOS, EQUINOS, ETC onde cada TIPO_ANIMAL poderá ter vários ANIMAIS, para cada animal, você deve armazenar (ID, NOME, ID_TIPO_ANIMAL, DT_NASCIMENTO, COR, PESO, ALTURA). 
+
+Além disso, o BD deve armazenar um histórico de vacinação, onde ANIMAL pode ter 'N' VACINAS. Para a tabela vacina, armazene (ID, NOME, DATA_APLICACAO, ID_ANIMAL [FK]).
+ 
