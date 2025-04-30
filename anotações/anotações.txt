@@ -40,3 +40,68 @@ Com base no enunciado a seguir elabore o diagrama de entidade e relacionamento, 
 Um simpósio será organizado na universidade. A organização é de responsabilidade de uma ou mais pessoas. 
 Serão apresentados nesse simpósio vários minicursos, e cada um deles será ministrado por apenas uma pessoa. 
 Também serão aceitos artigos, sendo que cada um deles possui um tema (banco de dados, redes compiladores, realidade virtual, etc). Esses artigos são escritos por no mínimo uma pessoa e não possuem limite de número de autores. Cada artigo será encaminhado para uma comissão científica, sendo que há uma comissão científica para cada tema, que por sua vez é formada por uma ou mais pessoas, que emitirão um parecer sobre o artigo. As pessoas se inscreverão no simpósio, podendo escolher se querem assistir aos minicursos (e quais) e/ou palestras.
+
+----------------------------------------
+
+Aula 06:
+*Normalização*
+  Serve para analisar tabelas e organizá-las de modo que sua estrutura seja simples, relacional e estável, para que o gerenciamento possa ser eficiente e seguro.
+Os objetivos são: evitar a perda e a repetição de informação e atingir uma forma de representação adequada para o que se deseja armazenar.
+  Técnica empregada para melhorar as estruturas de dados resultantes de um projeto de dados do sistema. Evita problemas de redundância e anomalia através da decomposição de uma entidade em uma ou mais entidades. As Formas Normais (FN) são as regras de normalização e podem ocasionar uma proliferação de entidades que nem sempre é o ideal do ponto de vista de performance, devendo ser balanceadas as vantagens e as desvantagens antes da efetivação dos resultados de uma FN (NF).
+Assim, a normalização é um processo sistemático de geração de tabelas, podendo ser aplicadas regras que vão da primeira a quinta FN. Em grande parte dos casos, a aplicação da terceira forma FN já produz um conjunto de tabelas que organiza satisfatóriamente um Schema.
+Para adequar uma tabela a uma FN deve-se redesenhar o seu formato. A normalização também pode ser utilizada para projetar tabelas a partir de documentos, considerando-o como uma única tabela e aplicando as regras.
+
+Ex:	Desnormalizada 
+
+	[NOTA.FISCAL]
+	|NR.NOTA|
+	|NM.CLIENTE|
+	|ENDERECO|
+	|VENDEDOR|
+	|DT.EMISSAO|
+	|PRODUTO 1|
+	|PRODUTO 2|
+	|PRODUTO 3|
+	|PRODUTO N|
+
+*1º FN*
+  Exige que uma tabela não contenha aninhamentos (atributos repetitivos).
+Realiza o que se chama de nivelamento, gerando uma tabelacom todos os dados coletados em atributos atômicos. 
+A PK dessa tabela será formada pela composição da PK de cada tabela aninhada, além da PK da tabela externa.
+Caso existam atributos multivalorados, estes devem se tornar componentes na PK, uma vez que os seus valores estarão associados várias vezes com os demais dados da tabela. 
+Se existia aninhamento, provavelmente a 1NF não é o estado final, uma vez que haverá redundância nos dados da tabela externa.
+Uma tabela só está na 1FN se nenhum de seus atributos possui domínio multivalorado, ou seja, devem ser eliminados registros de dados repetitivos.
+Na NOTA FISCAL, vemos que os produtos são atributos repetidos.
+
+Ex:
+	[NOTA.FISCAL]	     N	[ITEM_NOTA_FISCAL]
+	|NM.CLIENTE|   1    ->	|NR_NOTA|
+	|ENDERECO|	---	|COD.PRODUTO|
+	|NM.VENDEDOR|		|NM.PRODUTO|
+	|DT.EMISSAO|
+	|VL.TOTAL.NOTA|
+
+
+*2º FN*
+  Exige o entendimento do conceito de dependência funcional (DF).
+Existe DF em uma tabela sempre que um conjunto de um ou mais atributos determina o valor de outro conjunto de um ou mais atributos. A regra diz que uma tabela está na 2FN se e somente se estiver na 1FN e todo atributo não chave depende funcionalmente de toda a PK e não apenas de parte dela (deve existir DF de toda a PK).
+Nesse caso, cada atributo não chave de uma tabela deve ser analisado. Caso seja verificado DF de parte da PK, gera-se uma tabela que tenha esse atributo não chave e essa parte da PK (que se torna agora PK completa).
+Se existirem outros atributos não-chave com DF dessa mesma parte da PK, esses serão inseridos nesta nova tabela.
+O resultado é um conjunto de tabelas onde só existem DFs da PK completa. Obviamente, tabelas com PK simples ou que não possuem atributos não-chave já estão na 2NF.
+Mesmo após a aplicação da 2FN, podem ainda existir redundâncias e anomalias.
+
+Aplicação: 
+A projeção do atributo determinante de produtos, mais os outros atributos que dependem apenas dele em outra tabela. A PK será o atributo determinante projetado.
+
+	[NOTA.FISCAL]		[ITEM.NOTA]		[PRODUTO]
+	|#NR.NOTA|		|NR.NOTA #|		|COD.PRODUTO|
+	|ID.CLIENTE| ->		|COD.PRODUTO #|	->	|DESCRICAO|
+	|ENDERECO|		|QT.PRODUTO|		|UN.MEDIDA|
+	|ID.VENDEDOR|		|VL.UNITARIO|		|VL.UNITARIO|
+	|DT.EMISSAO|		|VL.TOTAL|
+	|VL.TOTAL|
+	     |
+	     V
+	[VENDEDOR]
+	|ID.VENDEDOR|
+	|NOME|
