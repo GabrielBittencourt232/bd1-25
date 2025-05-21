@@ -105,3 +105,69 @@ A projeção do atributo determinante de produtos, mais os outros atributos que 
 	[VENDEDOR]
 	|ID.VENDEDOR|
 	|NOME|
+
+*Terceira Forma Normal*
+  A regra é claro, uma tabela está na 3FN se e somente se todo atributo não-chave depende funcional e diretamente da PK, e não de um conjunto de um ou mais atributos não-chave. Obviamente, apenas tabelas com mais de um atributo não-chave são consideradas, para efeito de análise na 3FN. 
+  Caso seja recebido uma DF (Dependência Funcional) indireta, uma nova tabela é gerada, onde os atributos não-chave que determinam outros tornam-se PK e os atributos com DF indireta migram para ela com atributos não-chave. Na tabela antiga os atributos determinantes tornam-se chaves estrangeiras. 
+A tabela estará na 3FN quando está na 2FN e não há DF transitiva entre seus atributos.
+- DFT: Significa que um atributo não depende diretamente do atributo determinante e sim de algum outro atributo, que por sua vez depende do determinante.
+
+Ex 3FN:
+
+	[NOTA FISCAL]		[CLIENTE]
+	|NR_NOTA|      N <<----1|COD_CLIENTE|
+       1|COD_CLIENTE|		|NM_CLIENTE|
+     ---|COD_VENDEDOR|		|DS_ENDERECO|
+     |	|DT_EMISSAO|	N<<------	
+     |	|VL_TOTAL_NOTA|		|
+     |				|
+     |	N			1				
+     ->>[ITEM_NOTA]		[VENDEDOR]
+	|NR_NOTA|		|COD_VENDEDOR|
+	|COD_PRODUTO|		|NM_VENDEDOR|
+	|DT_PRODUTO|   N
+	|VL_PRECO|     <<--- 
+	|VL_TOTAL|          |1
+			[PRODUTO]
+			|COD_PRODUTO|
+			|DS_PRODUTO|
+			|IE_UNIDADE|
+			|VL_PRECO|
+
+
+*Quarta Forma Normal*
+  Ocorre quando há tabelas que mantém relacionamentos ternários ou superiores e são detectadas dependências funcionais multivaloradas, ou seja, um ou mais atributos determinam vários valores de um outro atributo. São consideradas, para efeito de análise da 4FN, apenas tabelas com PK tripla (quadrupla e assim por diante) que não tenham atributos não-chave. 
+Normalmente detecta-se a necessidade da aplicação da 4FN quando se tem mais de um atributo multivalorado em uma tabela não normalizada. Esses atributos acabam fazendo parte da chave primária nessa tabela na 1FN, porém, isolados, eles não determinam nenhum atributo não-chave. Isto resulta em uma tabela com PK tripla (no mínimo), onde um deles é o ID da tabela propriamente dita.
+Uma tabela está na 4FN se está na 3FN e não apresenta mais um fato multivalor em relação a uma entidade descrita pela tabela.
+O objetivo da 4FN é evitar redundância em situações que há fatos multivalorados em vez de DF.
+Para isso, constroem-se tantas tabelas quantos fatos multivalorados há para certa entidade descrita na tabela. Esta entidade estará representada em todas as tabelas resultantes.
+
+*Quinta Forma Normal*
+  Esta regra também se aplica apenas a tabelas que representam relacionamentos ternários, sem atributos não-chave.
+É dito que uma tabela está na 5FN se um relacionamento triplo puder ser decomposto em 3 tabelas de relacionamentos binários (chave primária é um par) sem que isso gere dados incorretos quando eles forem continuados somente em uma tabela de relacionamento triplo.
+Essa garantida de consistência exige que uam premissa seja sempre verdadeira:
+Toda vez que um dado A se relaciona com outros dois (B e C) e estes outros também por sua vez (gerando 3 relações binárias; (A,B) (A,C) e (B,C)), então é verdade que ocorre na realidadeos 3 dados combinados (A,B,C). Um exemplo é pensar em A como sendo um agente de vendas, B como sendo a empresa fabricante e C um produto.
+A premissa seria: Se A representa a empresa B, A especialista na venda do produto C e B produz o produto C, então é verdade que A vende o produto C para a empresa B. Essa forma normal elimina o relacionamento ternário e a redundância de pares de valores relacionados, como, por exemplo, a redundância da afirmação de que o agente A representa a empresa B.
+Uma tabela está na 5FN se está na 4FN e seu conteúdo não pode ser reconstituído a partir de tabelas menores.
+O seu objetivo é impedir que a decomposição de tabelas gere infomração inconsistente na junção.
+Verifique sempre se há ou não a necessidade de conceber relacionamento de grau maior que 2.
+Em todo caso, dificilmente um projetista aplicará a normalização segunda a 5FN, porque qualquer tabela que não é 5FN geralmente falha em uma das formas normais anteriores.
+
+Atividade:
+Dados cadastrais:
+Matrícula:			Nome:
+Data Nascimento:		Nacionalidade:		Sexo:
+Est. Civil:			RG:			CPF:
+Endereço:			Data Admissão:
+
+				Cargos Ocupados
+Cargo:				Data Início:		Data fim:
+Cargo:				Data Início:		Data fim:
+
+				Departamento de lotação
+Departamento:			Data Início:		Data fim:
+Departamento:			Data Início:		Data fim:
+
+				Dependentes
+Nome:				Data nascimento:
+Nome: 				Data nascimento:
